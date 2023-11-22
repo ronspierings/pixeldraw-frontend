@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import PixelData from '@/classes/pixelData.js'
+    // import PixelData from '@/classes/pixelData.js'
 
     export default {
         data () 
