@@ -1,4 +1,4 @@
-<template>
+<template>  
   <GridView></GridView>
 </template>
 

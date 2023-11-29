@@ -1,10 +1,10 @@
 class PixelData
 {
     constructor(color) {
-        this._color = color;
+        this._color = "#" + this.randomColor();
     }
 
-    get color()
+    color()
     {
         return this._color
     }
@@ -13,7 +13,13 @@ class PixelData
     {
         this._color = color;
     }
+
+    randomColor()
+    {
+        return Math.floor( Math.random() * 16777215 ).toString(16);
+    }
 }
+
 
 // 
 export default PixelData
