@@ -1,21 +1,23 @@
 <template>
 
-    <div class="colorSelectElement">
-        <input type="color" name="colorInput">
+    <ColorPicker></ColorPicker>
+
+    <div id="gridElement">
+        <!-- Row element -->
+        <div v-for="(pixelRow, pixelRowIndex) in pixels" class="grid-row">
+            <!-- Column element -->
+            <div  
+                v-for="(pixelColumn, pixelColumnIndex) in pixelRow" 
+                class="grid-item"
+                :style="{ backgroundColor: pixelColumn._color }"
+                @click="selectPixel($event)" 
+                :data-row="pixelRowIndex" 
+                :data-column="pixelColumnIndex"
+                >
+
+            </div>
+        </div>
     </div>
-
-    <v-container class="fill-height bg-red pixelGrid" fluid no-gutters>
-        
-        <v-responsive width="100%"></v-responsive>
-
-        <!-- The ROW element -->
-        <v-row v-for="(pixelRow, pixelRowIndex) in pixels">
-            <!-- The Column element -->
-            <v-col v-for="(pixelColumn, pixelColumnIndex) in pixelRow" class="pixel" @click="selectPixel($event)" :data-row="pixelRowIndex" :data-column="pixelColumnIndex" fluid :style="{ backgroundColor: pixelColumn._color }">
-                
-            </v-col>
-        </v-row>
-    </v-container>
 </template>
 
 <script>
@@ -33,49 +35,39 @@
             }
         },
         methods: {
-            fillMockData() {
-                // Generate 512 rows
-                for(let row = 0; row < 32; row++)
-                {
-                    // Create new row
-                    this.pixels[row] = [];
-
-                    for(let column = 0; column < 32; column++)
-                    {
-                        // Add new column on this row, with a random Color
-                        this.pixels[row].push( new PixelData("#CCCCCC") );
-                    }
-                }
-            },
+            /*
+                Retrieve the Pixel Data from the API
+            */
             getPixelData() {
                 fetch("https://frontend-development-api.azurewebsites.net/API/pixelDrawer/pixelData.json")
                 .then( (respons) => respons.json() )
                 .then( (pixelData) => { 
+                    this.pixels = pixelData;        
+                }).catch( (response) => {
                     
-                    this.pixels = [];
-                    for(let [rowIndex, rowData] in pixelData)
-                    {
-                        console.log(rowIndex, rowData);
-
-                        for(let columnData in rowData)
-                        {
-
-                        }
-                    }           
-                })
+                });
             },
             selectPixel(event) {
                 let element = event.target
 
-                let row = element.dataset.row;
-                let column = element.dataset.column;
+                let row = element.dataset.row
+                let column = element.dataset.column
+                let currentPixel =  this.pixels[row][column];
+
+                // Set the ColorPicker correctly
+                document.getElementById("colorSelectElement").classList.remove("elementHiddenClass")
+                
+                document.getElementById("colorInputElement").value = currentPixel._color
+                document.getElementById("colorInputElement").click()
+
+                console.warn("Clicked: ", currentPixel)
+
 
             }
         },
         mounted() 
         {
-            this.fillMockData();
-
+            // Load the Pixedlata from the API and store it
             this.getPixelData();
         }       
     }
@@ -83,19 +75,42 @@
 
 <style>
 
-    .pixelGrid {
-        box-sizing: border-box;
+    html, body {
+        margin:0px;
+        overflow:hidden;
     }
 
-    .pixel {
+    /* 
+        Grid Styling
+    */
+    #gridElement {
+        background-color: red;
+        height: 100vh;
+        width: 100vw;
+        margin:0;
+        display: flex;
+        flex-direction: column;
+        
+    }
 
+    .grid-row {
+        display: flex;
+        flex-wrap: nowrap;
+        flex: 1;
+    }
+
+    .grid-item {
+        flex: 1;
+        
+    }
+    .grid-item:hover {
+        box-sizing:border-box;
+        box-shadow: 0px 0px 0px 4px black;
+        z-index: 999;
+        cursor: crosshair;
     }
 
     .pixelSelected {
         box-shadow: inset 0px 0px 0px 3px #f00;
-    }
-
-    .colorSelectElement {
-        display: none;
     }
 </style>

@@ -5,11 +5,15 @@ In het gebouw van de Avans AD draait de Pixeldraw app. Iedere student mag bij bi
 ## Project setup
 
 ```
+# I personally use NPM
+npm install
+
+OR You could use:
+
 # yarn
 yarn
 
-# I personally use NPM
-npm install
+OR:
 
 # pnpm
 pnpm install
@@ -18,11 +22,11 @@ pnpm install
 ### Compiles and hot-reloads for development
 
 ```
-# yarn
-yarn dev
-
 # npm
 npm run dev
+
+# yarn
+yarn dev
 
 # pnpm
 pnpm dev
@@ -31,11 +35,11 @@ pnpm dev
 ### Compiles and minifies for production
 
 ```
-# yarn
-yarn build
-
 # npm
 npm run build
+
+# yarn
+yarn build
 
 # pnpm
 pnpm build
