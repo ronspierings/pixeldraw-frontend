@@ -1,7 +1,6 @@
 <template>
 
-    <ColorPicker></ColorPicker>
-
+    <ColorPicker ref="colorPicker" @changeColor="newColorSelected"></ColorPicker>
     <div id="gridElement">
         <!-- Row element -->
         <div v-for="(pixelRow, pixelRowIndex) in pixels" class="grid-row">
@@ -9,10 +8,10 @@
             <div  
                 v-for="(pixelColumn, pixelColumnIndex) in pixelRow" 
                 class="grid-item"
-                :style="{ backgroundColor: pixelColumn._color }"
+                :style="{ backgroundColor: pixelColumn['color'] }"
                 @click="selectPixel($event)" 
-                :data-row="pixelRowIndex" 
-                :data-column="pixelColumnIndex"
+                :data-row="pixelColumn['pos_x']" 
+                :data-column="pixelColumn['pos_y']"
                 >
 
             </div>
@@ -22,28 +21,67 @@
 
 <script>
     import PixelData from '@/classes/PixelData.js';
+    import ColorPicker from '@/components/ColorPicker.vue';
+
+    const PIXEL_CHANGE_API = "https://pixeldraw-backend.azurewebsites.net/api/pixels/pixelChange?"
 
     // Pixel API:
     // https://frontend-development-api.azurewebsites.net/API/pixelDraw/pixelData.json
 
     export default {
-        data () 
+        components: {
+            ColorPicker
+        },
+        emits: ['loadingupdate'],
+        data() 
             {
             return {
                 pixels: [
-                ]
+                ],
+                colorPickerVisible: false,
+                currentSelectedPixel: "",
             }
         },
         methods: {
             /*
                 Retrieve the Pixel Data from the API
             */
+            async newColorSelected(color){
+                // Set the new color to the currently selected pixel
+                this.currentSelectedPixel.color = color;
+
+                // WHat to send to the API?
+                const data = this.currentPixel
+
+                let urlWithParams = PIXEL_CHANGE_API + new URLSearchParams({
+                    pos_x: this.currentSelectedPixel.pos_x,
+                    pos_y: this.currentSelectedPixel.pos_y,
+                    color: this.currentSelectedPixel.color
+                })
+                
+                const response = await fetch(urlWithParams, {method: 'PUT'})
+                .then( (data) => {
+                    console.log("PUT success:", data);
+                })
+                .catch( (error) => {
+                    console.error(error);
+                })
+
+                // Send this pixel to the API!
+                console.log("Test")
+            },
             getPixelData() {
-                fetch("https://frontend-development-api.azurewebsites.net/API/pixelDrawer/pixelData.json")
+                // Show the loadingscreen
+                this.$emit('loadingupdate', true)
+                fetch("https://pixeldraw-backend.azurewebsites.net/api/pixels")
                 .then( (respons) => respons.json() )
                 .then( (pixelData) => { 
-                    this.pixels = pixelData;        
+                    this.pixels = pixelData;
+
+                    // Hide the loadingscreen
+                    this.$emit('loadingupdate', false)  
                 }).catch( (response) => {
+                    console.error("Internal JSON handling error: ", response)
                     
                 });
             },
@@ -52,17 +90,14 @@
 
                 let row = element.dataset.row
                 let column = element.dataset.column
-                let currentPixel =  this.pixels[row][column];
 
-                // Set the ColorPicker correctly
-                document.getElementById("colorSelectElement").classList.remove("elementHiddenClass")
-                
-                document.getElementById("colorInputElement").value = currentPixel._color
-                document.getElementById("colorInputElement").click()
+                // Set the selected Pixel as the currentSelectedPixel
+                this.currentSelectedPixel = this.pixels[row][column];
 
-                console.warn("Clicked: ", currentPixel)
+                // Show the ColorPicker
+                this.$refs.colorPicker.showColorPicker(this.currentSelectedPixel.color)
 
-
+                console.info("Clicked: ", this.currentSelectedPixel)
             }
         },
         mounted() 
