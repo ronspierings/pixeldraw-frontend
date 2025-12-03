@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    
+    <h1>Current open requests: <span id="openRequestsAmount"></span> </h1>
+    <h2>Script aan: <span id="scriptRunningValue"></span> </h2>    
+    <h2>Current row: <span id="xAmount"></span> </h2>
+    <h2>Current col: <span id="yAmount"></span> </h2>
+
+    <button onclick="runScript()">Start</button>
+    <button onclick="stopScript()">Stop</button> 
+
+    
+
+    <script>
+
+        const xMax = 63;
+        const yMax = 63;
+        const baseURL = new URL("https://pixeldraw-backend.azurewebsites.net/api/pixels/pixelChange");
+        
+        var waitPercentage = 100;
+        var waitSeconds = 1.4;
+        var currentDelay = 0;
+
+        var currentOpenRequest = 0;
+        var scriptRunning = false;
+
+        function runScript() {
+            scriptRunning = true;
+
+            // Rows
+            for(let x = 31; x <= xMax; x++)
+            {
+                // Do this row one by one
+                for(let y = 0; y <= yMax; y++)
+                {
+                    // z = current amount of operations
+                    let z = (x * xMax) + y;
+
+                    // Calculate the delay, 
+                    //let delay = (z * waitSeconds) * (waitPercentage / 100);
+
+                    currentDelay += waitSeconds * (waitPercentage / 100);
+                    
+                    let delay = currentDelay;
+                    
+                    console.log("Delay " + delay + " secs");
+                    
+                    baseURL.searchParams.set("pos_x", x)
+                    baseURL.searchParams.set("pos_y", y)
+                    baseURL.searchParams.set("color", "#FFF")
+
+                    let url = baseURL.href;
+
+                    if(scriptRunning == false)
+                    {
+                        return;
+                    }
+
+                    // Trigger not all at once, but in a gradual scheme
+                    setTimeout(function()
+                    {
+                        // Kill the script if not running 
+                        if(scriptRunning == false)
+                        {
+                            return;
+                        }
+
+                        updateUI();
+
+                        changeRequestAmount(1);
+
+                        console.info("PUT-request send:" , {'x': x, 'y': y, 'delay' : delay })
+
+                        fetch(url, { method: "PUT"} ).then(() => changeRequestAmount(-1) );
+
+                    }, delay * 1000 );
+                }
+
+                // Lower the wait time with a amount every new row
+                // waitPercentage = (waitPercentage * 0.96);
+            }
+
+        }
+
+        function stopScript() {
+            scriptRunning = false;
+        }
+        
+
+        function changeRequestAmount(amount)
+        {
+            currentOpenRequest += amount;
+            updateUI()
+        }
+
+        function updateUI()
+        {
+            document.getElementById("openRequestsAmount").innerHTML = currentOpenRequest;
+            //document.getElementById("xAmount").innerText = x;
+            //document.getElementById("yAmount").innerText = y;
+            document.getElementById("scriptRunningValue").innerHTML = scriptRunning;
+            
+        }
+
+    </script>
+
+
+</body>
+</html>

@@ -1,28 +1,25 @@
 {
-  "name": "pixeldraw",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --fix --ignore-path .gitignore"
-  },
-  "dependencies": {
-    "@mdi/font": "7.0.96",
-    "core-js": "^3.29.0",
-    "roboto-fontface": "*",
-    "vue": "^3.2.0",
-    "vue-router": "^4.0.0",
-    "vuetify": "^3.0.0",
-    "webfontloader": "^1.0.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^4.0.0",
-    "eslint": "^8.37.0",
-    "eslint-plugin-vue": "^9.3.0",
-    "sass": "^1.60.0",
-    "vite": "^4.2.0",
-    "vite-plugin-vuetify": "^1.0.0"
-  }
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "webpack --mode development && vite",
+        "build": "webpack --mode production && vite build"
+    },
+    "devDependencies": {
+        "@popperjs/core": "^2.11.6",
+        "@vitejs/plugin-vue": "^4.5.0",
+        "axios": "^1.6.4",
+        "bootstrap": "^5.2.3",
+        "laravel-vite-plugin": "^1.0.0",
+        "sass": "^1.56.1",
+        "vite": "^5.0.0",
+        "vue": "^3.2.37",
+        "webpack": "^5.91.0",
+        "webpack-dev-server": "^5.0.4"
+    },
+    "dependencies": {
+        "laravel-mix": "^6.0.49",
+        "vue-loader": "^17.4.2",
+        "vuetify": "^3.6.9"
+    }
 }
