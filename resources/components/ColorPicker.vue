@@ -1,6 +1,6 @@
 <template>
   <div id="colorSelectElement" v-if="colorPickerVisible">
-    <p>Select a color</p>
+    <p>Select a colo</p>
     <button :style="{ backgroundColor: '#F44336' }" @click="setColor('#F44336')"></button>
     <button :style="{ backgroundColor: '#E91E63' }" @click="setColor('#E91E63')"></button>
     <button :style="{ backgroundColor: '#9C27B0' }" @click="setColor('#9C27B0')"></button>
