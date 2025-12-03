@@ -42,7 +42,9 @@
         },
         hideColorPicker() 
         {
-          this.colorPickerVisible = false
+          colorSelectElement.classList.add("fade-green")
+          
+          //this.colorPickerVisible = false
           console.log("Hide!")
         }
       },
@@ -85,5 +87,19 @@
       padding:3px;
       border:none;
     }
+
+    .fade-green {
+      /* Initial green color */
+      background-color: green !important;
+      opacity: 1 !important;  /* Initially invisible */
+      animation: fade-in-out 2s ease-in-out;  /* Animation name, duration, and timing function */
+      animation-fill-mode: forwards;  /* Keep the final state after animation */
+    }
+
+    @keyframes fade-in-out {
+      from { opacity: 0; }  /* Start invisible */
+      to { opacity: 1; }  /* Fade to fully visible at 100% */
+    }
+
 </style>
   

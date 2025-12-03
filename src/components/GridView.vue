@@ -53,12 +53,14 @@
                 // WHat to send to the API?
                 const data = this.currentPixel
 
+                // Create the PUT params (as GET params though :( )
                 let urlWithParams = PIXEL_CHANGE_API + new URLSearchParams({
                     pos_x: this.currentSelectedPixel.pos_x,
                     pos_y: this.currentSelectedPixel.pos_y,
                     color: this.currentSelectedPixel.color
                 })
                 
+                // Send this pixel to the API!
                 const response = await fetch(urlWithParams, {method: 'PUT'})
                 .then( (data) => {
                     console.log("PUT success:", data);
@@ -67,8 +69,8 @@
                     console.error(error);
                 })
 
-                // Send this pixel to the API!
-                console.log("Test")
+                // Hide the ColorPicker
+                this.$refs.colorPicker.hideColorPicker()
             },
             getPixelData() {
                 // Show the loadingscreen
@@ -148,4 +150,5 @@
     .pixelSelected {
         box-shadow: inset 0px 0px 0px 3px #f00;
     }
+
 </style>
