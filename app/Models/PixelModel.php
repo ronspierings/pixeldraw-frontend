@@ -46,7 +46,7 @@ class PixelModel extends Model
         'pos_y',
         'color',
     ];
-   
+
 
     public function __construct()
     {
